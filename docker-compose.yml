@@ -19,6 +19,13 @@ services:
   #     - servicebus
   #   command: npm run test:staging
 
+  redis:
+    image: redis
+    networks:
+      - servicebus
+    ports:
+      - 6379:6379
+
   zk:
     image: wurstmeister/zookeeper:latest
     ports:

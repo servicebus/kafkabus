@@ -11,6 +11,11 @@ var retry = require('servicebus-retry');
 
 let kafkaBus = require('../').bus
 
+var store = new retry.RedisStore({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT
+});
+
 module.exports = async function () {
   let bus 
   
@@ -33,7 +38,9 @@ module.exports = async function () {
   bus.use(bus.correlate());
   // bus.use(bus.logger());
   bus.use(retry({
-    setRetriesRemaining: true
+    setRetriesRemaining: true,
+    store,
+    keyExpireTTL: 0
   }))
 
   return bus
