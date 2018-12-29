@@ -40,7 +40,8 @@ module.exports = async function () {
   bus.use(retry({
     setRetriesRemaining: true,
     store,
-    keyExpireTTL: 0
+    keyExpireTTL: 0,
+    namespace: 'test'
   }))
 
   return bus
