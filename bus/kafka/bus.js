@@ -1,14 +1,9 @@
 const { Kafka, CompressionTypes } = require('kafkajs')
-const Bus = require('../core/es6-bus')
-    // Correlator = require('./correlator')
-const topicConsumer = require('./topicConsumer')
+const Bus = require('@servicebus/core')
+const json = require('@servicebus/json-formatter')
 const debug = require('debug')('servicebus-kafka')
-const json = require('@servicebus/bus/bus/formatters/json')
-const util = require('util')
+const topicConsumer = require('./topicConsumer')
 const requiredParam = require('../lib/requiredParam')
-
-const _consume = Symbol('consume')
-const _produce = Symbol('produce')
 
 class KafkaBus extends Bus {
   constructor ({
