@@ -7,7 +7,7 @@ let { connectionOpts } = require('../testHelpers')
 //   throw new Error('Tests require a KAFKA_HOSTS environment variable to be set, pointing to the Kafka instance you wish to use.');
 
 // var brokers = process.env.KAFKA_HOSTS;
-var retry = require('servicebus-retry');
+var retry = require('@servicebus/retry');
 
 let kafkaBus = require('../').bus
 
