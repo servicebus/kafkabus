@@ -4,10 +4,7 @@ module.exports = function requiredParam (param) {
   )
   // preserve original stack trace
   if (typeof Error.captureStackTrace === 'function') {
-    Error.captureStackTrace(
-    requiredParamError, 
-    requiredParam
-    )
+    Error.captureStackTrace(requiredParamError, requiredParam)
   }
   throw requiredParamError
 }

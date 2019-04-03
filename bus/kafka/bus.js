@@ -20,9 +20,9 @@ class KafkaBus extends Bus {
 
     log('creating kafkabus')
 
-    Object.assign(this, { 
-      brokers, 
-      serviceName: `servicebus-${serviceName}` ,
+    Object.assign(this, {
+      brokers,
+      serviceName: `servicebus-${serviceName}`,
       log,
       // clientOptions,
       // correlator: new Correlator(options),
@@ -67,8 +67,8 @@ class KafkaBus extends Bus {
       kafkaBus.initialized = true
       // Return instance
       return kafkaBus
-    }())
-  }  
+    })()
+  }
 
   async connect () {
     const { log, producer } = this
@@ -86,9 +86,9 @@ class KafkaBus extends Bus {
     return await this.producer.disconnect()
   }
 
-  async consume({
+  async consume ({
     topicName = requiredParam('topicName'),
-    messageType = "topic",
+    messageType = 'topic',
     messageHandler = requiredParam('messageHandler'),
     callingFunction = 'consume',
     options
@@ -96,9 +96,11 @@ class KafkaBus extends Bus {
     const bus = this
     const { log, client, topics, serviceName } = bus
 
-    log(`${callingFunction} called - creating a consumer for ${messageType} "${topicName}"`)
+    log(
+      `${callingFunction} called - creating a consumer for ${messageType} "${topicName}"`
+    )
 
-    return new Promise (async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let topic
 
       if (topics[messageType][topicName] === undefined) {
@@ -116,11 +118,11 @@ class KafkaBus extends Bus {
           log('error creating topicConsumer', error)
           throw error
         }
-    
+
         topics[messageType][topicName] = topic
         log('topic registered', topicName)
 
-        return resolve(topic)  
+        return resolve(topic)
       } else {
         return resolve(topics[messageType][topicName])
       }
@@ -128,11 +130,11 @@ class KafkaBus extends Bus {
   }
 
   async listen (topicName, options, messageHandler) {
-    if (typeof options === "function") {
-      messageHandler = options;
-      options = {};
+    if (typeof options === 'function') {
+      messageHandler = options
+      options = {}
     }
-    
+
     return this.consume({
       topicName,
       messageType: 'command',
@@ -143,11 +145,11 @@ class KafkaBus extends Bus {
   }
 
   async subscribe (topicName, options, messageHandler) {
-    if (typeof options === "function") {
-      messageHandler = options;
-      options = {};
+    if (typeof options === 'function') {
+      messageHandler = options
+      options = {}
     }
-    
+
     return this.consume({
       topicName,
       messageType: 'event',
@@ -157,7 +159,7 @@ class KafkaBus extends Bus {
     })
   }
 
-  async produce({
+  async produce ({
     topicName = requiredParam('topicName'),
     messageType = 'topic',
     message = requiredParam('message'),
@@ -166,7 +168,7 @@ class KafkaBus extends Bus {
   }) {
     const { log, producer } = this
 
-    log(`${callingFunction} called - producing ${messageType} ${topicName}`);
+    log(`${callingFunction} called - producing ${messageType} ${topicName}`)
 
     const sendMessage = async function (topicName, message, options) {
       log(`sending message to topic ${topicName}`, message, options)
@@ -175,7 +177,7 @@ class KafkaBus extends Bus {
       let result = await producer.send({
         topic: topicName,
         compression: CompressionTypes.GZIP,
-        messages: [ 
+        messages: [
           {
             key: `${partitionKey}-${messageType}`,
             value: JSON.stringify(message)
@@ -185,8 +187,13 @@ class KafkaBus extends Bus {
 
       return result
     }
-  
-    return this.handleOutgoing(topicName, message, options, sendMessage.bind(this));
+
+    return this.handleOutgoing(
+      topicName,
+      message,
+      options,
+      sendMessage.bind(this)
+    )
   }
 
   async send (topicName, message, options) {
@@ -207,10 +214,14 @@ class KafkaBus extends Bus {
     })
   }
 
-  async produceBatch ({ topic, messages, messageType = 'topic' }, options = {}, callback) {
+  async produceBatch (
+    { topic, messages, messageType = 'topic' },
+    options = {},
+    callback
+  ) {
     const { log, producer, initialized } = this
 
-    log(`producing message on topic ${topic}`);
+    log(`producing message on topic ${topic}`)
 
     let batchSize = messages.length
     let count = 0
@@ -218,7 +229,6 @@ class KafkaBus extends Bus {
     let partitionKey = options.partitionKey
 
     const sendMessages = async function (topic, message, options) {
-      
       count++
 
       let kafkaMessage = {
@@ -246,12 +256,11 @@ class KafkaBus extends Bus {
         return result
       }
     }
-  
-    messages.map((message) => {
-      this.handleOutgoing(topic, message, options, sendMessages.bind(this));
+
+    messages.map(message => {
+      this.handleOutgoing(topic, message, options, sendMessages.bind(this))
     })
   }
-
 }
 
 module.exports = async function kafkabus (options) {
