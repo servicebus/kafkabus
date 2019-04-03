@@ -2,7 +2,7 @@ const { EventEmitter } = require('events')
 const requiredParam = require('../lib/requiredParam')
 
 class TopicConsumer extends EventEmitter {
-  constructor({
+  constructor ({
     topicName = requiredParam('topicName'),
     bus = requiredParam('bus'),
     messageHandler = requiredParam('messageHandler'),
@@ -42,7 +42,7 @@ class TopicConsumer extends EventEmitter {
 
       topicConsumer.initialized = true
       return topicConsumer
-    }())
+    })()
   }
 
   async connect () {
@@ -62,7 +62,7 @@ class TopicConsumer extends EventEmitter {
       throw error
     }
   }
-  
+
   // TODO: partition option
   async subscribe () {
     const { consumer, bus } = this
@@ -84,30 +84,33 @@ class TopicConsumer extends EventEmitter {
     try {
       await consumer.run({
         eachMessage: ({ topic, partition, message }) => {
-          log(`handling incoming message on topic ${topic} on partion ${partition}`, message)
-          message.content = JSON.parse(message.value && message.value.toString())
+          log(
+            `handling incoming message on topic ${topic} on partion ${partition}`,
+            message
+          )
+          message.content = JSON.parse(
+            message.value && message.value.toString()
+          )
 
           const options = {}
-          if (message.content.properties && message.content.properties.ack) options.ack = true
+          if (message.content.properties && message.content.properties.ack)
+            options.ack = true
           // log({ message })
-          handleIncoming.call(
-            bus,
-            consumer, 
-            message, 
-            options, 
-            function (consumer, message, options) {
-              try {
-                
-                let { properties } = message.content
-                // delete messageData.properties
-                // log('messageData:', messageData)
-                messageHandler(message.content, { properties });
-              } catch (err) {
-                log('Error handling message')
-                throw err
-              }
+          handleIncoming.call(bus, consumer, message, options, function (
+            consumer,
+            message,
+            options
+          ) {
+            try {
+              let { properties } = message.content
+              // delete messageData.properties
+              // log('messageData:', messageData)
+              messageHandler(message.content, { properties })
+            } catch (err) {
+              log('Error handling message')
+              throw err
             }
-          )
+          })
         }
       })
     } catch (error) {
