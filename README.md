@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mateodelnorte/servicebus.svg?branch=master)](https://travis-ci.org/mateodelnorte/servicebus)
+[![Build Status](https://travis-ci.com/servicebus/kafkabus.svg?branch=master)](https://travis-ci.com/servicebus/kafkabus)
 
 # servicebus
 
