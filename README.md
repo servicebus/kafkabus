@@ -4,11 +4,13 @@
 
 > NOTE: The Kafka version is still in development. If you want a stable servicebus now, check out rabbitbus. It's been used in production to process billions of dollars in transactions in trading systems.
 
-Simple service bus for sending events between processes using kafka
+Simple service bus for sending events between processes using kafka.
 
-`@servicebus` is a collection of components made for building distributed systems, and as such, some of the tools exist to help implement patterns such as CQRS.
+`@servicebus` is a collection of components made for building distributed systems, and as such, some of the tools exist to help implement patterns such as CQRS (see more below).
 
-## Sending and Receiving
+You can use servicebus `send/listen` for one to one messaging, or `publish/subscribe` for one to many messaging.
+
+## Send / Listen
 
 Servicebus allows simple sending and recieving of messages in a 1:1 sender:listener configuration. The following two processes will send an event message called 'my.event' every second from process A to process B via RabbitMQ and print out the sent event:
 
