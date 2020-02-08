@@ -32,7 +32,7 @@
   "dependencies": {
     "debug": "4.1.1",
     "extend": "3.0.2",
-    "kafkajs": "1.5.1",
+    "kafkajs": "1.12.0",
     "node-uuid": "1.4.8",
     "readable-id-mjs": "1.0.0"
   },
