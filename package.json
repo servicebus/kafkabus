@@ -21,7 +21,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run test"
+      "pre-commit": "lint-staged && make docker-test"
     }
   },
   "homepage": "https://github.com/servicebus/kafkabus",
@@ -30,7 +30,7 @@
     "url": "https://github.com/servicebus/kafkabus.git"
   },
   "dependencies": {
-    "@servicebus/core": "^1.0.1",
+    "@servicebus/core": "^1.1.0",
     "@servicebus/json-formatter": "^1.0.0",
     "debug": "4.1.1",
     "extend": "3.0.2",
