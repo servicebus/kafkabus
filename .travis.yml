@@ -1,15 +1,13 @@
 language: node_js
 node_js:
-  - '8'
-  - '10'
-  - 'node'
+  - 12
 cache: npm
 notifications:
   email: false
 before_install:
   - npm install -g codecov
 script:
-  - make docker-test
+  - DEBUG= make docker-test
   - codecov
 branches:
   except:
