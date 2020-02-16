@@ -27,9 +27,11 @@
   "homepage": "https://github.com/servicebus/kafkabus",
   "repository": {
     "type": "git",
-    "url": "git://github.com/servicebus/kafkabus.git"
+    "url": "https://github.com/servicebus/kafkabus.git"
   },
   "dependencies": {
+    "@servicebus/core": "^1.0.1",
+    "@servicebus/json-formatter": "^1.0.0",
     "debug": "4.1.1",
     "extend": "3.0.2",
     "kafkajs": "1.5.1",
@@ -37,6 +39,7 @@
     "readable-id-mjs": "1.0.0"
   },
   "devDependencies": {
+    "@servicebus/retry": "^1.0.0",
     "commitizen": "3.0.7",
     "cz-conventional-changelog": "2.1.0",
     "execa": "1.0.0",
