@@ -37,7 +37,7 @@
     "readable-id-mjs": "1.0.0"
   },
   "devDependencies": {
-    "@servicebus/retry": "1.0.0",
+    "@servicebus/retry": "1.0.1",
     "commitizen": "4.1.2",
     "cz-conventional-changelog": "3.2.0",
     "execa": "4.0.1",
