@@ -28,7 +28,7 @@
     "url": "https://github.com/servicebus/kafkabus.git"
   },
   "dependencies": {
-    "@servicebus/core": "1.1.0",
+    "@servicebus/core": "1.1.1",
     "@servicebus/json-formatter": "1.0.0",
     "debug": "4.1.1",
     "extend": "3.0.2",
