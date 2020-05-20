@@ -5,8 +5,9 @@ REDIS_HOST?=localhost
 REDIS_PORT?=6379
 
 docker-test:
-	rm -f .queues
+	echo "Starting Docker Test..."
 	HOST_IP=$(HOST_IP) docker-compose up -d
+	echo "Backend Coming Up... Waiting..."
 	sleep 10
 	make test-debug
 
