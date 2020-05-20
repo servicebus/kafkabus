@@ -13,7 +13,7 @@ const findContainerId = node => {
       --no-trunc \
       -q
   `
-  const containerId = execa.shellSync(cmd).stdout.toString('utf-8')
+  const containerId = execa(cmd).stdout.toString('utf-8')
   console.log(`${node}: ${containerId}`)
   return containerId
 }
@@ -26,7 +26,7 @@ const waitForNode = containerId => {
     sleep 5
   `
 
-  execa.shellSync(cmd)
+  execa(cmd)
   console.log(`Kafka container ${containerId} is running`)
 }
 
@@ -37,7 +37,7 @@ const createTopic = (containerId, topicName) => {
       bash -c "JMX_PORT=9998 /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --topic ${topicName} --replication-factor 1 --partitions 2 --zookeeper zk:2181 2> /dev/null"
   `
 
-  return execa.shellSync(cmd).stdout.toString('utf-8')
+  return execa(cmd).stdout.toString('utf-8')
 }
 
 const consumerGroupDescribe = containerId => {
@@ -47,7 +47,7 @@ const consumerGroupDescribe = containerId => {
       bash -c "JMX_PORT=9998 /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --group test-group-${secureRandom()} --describe > /dev/null 2>&1"
     sleep 1
   `
-  return execa.shellSync(cmd).stdout.toString('utf-8')
+  return execa(cmd).stdout.toString('utf-8')
 }
 
 console.log('\nFinding container ids...')
@@ -62,9 +62,9 @@ waitForNode(kafka3ContainerId)
 
 console.log('\nAll nodes up:')
 console.log(
-  execa
-    .shellSync(`HOST_IP=${process.env.HOST_IP} docker-compose -f ${process.env.COMPOSE_FILE} ps`)
-    .stdout.toString('utf-8')
+  execa(
+    `HOST_IP=${process.env.HOST_IP} docker-compose -f ${process.env.COMPOSE_FILE} ps`
+  ).stdout.toString('utf-8')
 )
 
 // console.log('\nCreating default topics...')
