@@ -2,7 +2,7 @@
   "name": "@servicebus/kafkabus",
   "description": "Simple service bus for sending events between processes using kafka.",
   "version": "0.0.0-development",
-  "author": "Patrick Lee Scott <patt@patscott.io>",
+  "author": "Patrick Lee Scott <pat@patscott.io>",
   "scripts": {
     "commit": "git-cz",
     "format": "prettier-standard 'bus/**/*.js'",
@@ -34,24 +34,24 @@
     "@servicebus/json-formatter": "1.0.0",
     "debug": "4.1.1",
     "extend": "3.0.2",
-    "kafkajs": "1.5.1",
+    "kafkajs": "1.12.0",
     "node-uuid": "1.4.8",
     "readable-id-mjs": "1.0.0"
   },
   "devDependencies": {
     "@servicebus/retry": "1.0.0",
-    "commitizen": "3.0.7",
-    "cz-conventional-changelog": "2.1.0",
-    "execa": "1.0.0",
-    "husky": "1.3.1",
+    "commitizen": "4.1.2",
+    "cz-conventional-changelog": "3.2.0",
+    "execa": "4.0.1",
+    "husky": "4.2.5",
     "ip": "1.1.5",
-    "jest": "24.7.0",
-    "lint-staged": "8.1.5",
+    "jest": "26.0.1",
+    "lint-staged": "10.2.4",
     "longjohn": "0.2.12",
-    "mocha": "6.0.2",
-    "prettier-standard": "9.1.1",
+    "mocha": "7.1.2",
+    "prettier-standard": "16.3.0",
     "should": "13.2.3",
-    "sinon": "7.3.1"
+    "sinon": "9.0.2"
   },
   "optionalDependencies": {},
   "config": {
