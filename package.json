@@ -12,12 +12,10 @@
     "test:staging": "mocha -R spec --recursive --exit"
   },
   "lint-staged": {
-    "linters": {
-      "**/*.js": [
-        "prettier-standard",
-        "git add"
-      ]
-    }
+    "*.js": [
+      "prettier-standard",
+      "git add"
+    ]
   },
   "husky": {
     "hooks": {
