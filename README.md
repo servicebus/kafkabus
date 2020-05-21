@@ -1,8 +1,6 @@
-[![Build Status](https://travis-ci.com/servicebus/kafkabus.svg?branch=master)](https://travis-ci.com/servicebus/kafkabus)
-
-# servicebus
-
-> NOTE: The Kafka version is still in development. If you want a stable servicebus now, check out rabbitbus. It's been used in production to process billions of dollars in transactions in trading systems.
+# @servicebus/kafkabus
+[![Build Status](https://travis-ci.org/servicebus/kafkabus.svg?branch=master)](https://travis-ci.org/servicebus/kafkabus)
+[![codecov](https://codecov.io/gh/servicebus/kafkabus/branch/master/graph/badge.svg)](https://codecov.io/gh/servicebus/kafkabus)
 
 Simple service bus for sending events between processes using kafka.
 
