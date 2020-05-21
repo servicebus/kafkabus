@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@servicebus/core": "1.1.1",
-    "@servicebus/json-formatter": "1.0.0",
+    "@servicebus/json-formatter": "1.0.1",
     "debug": "4.1.1",
     "extend": "3.0.2",
     "kafkajs": "1.12.0",
