@@ -8,7 +8,7 @@ docker-test:
 	echo "Starting Docker Test..."
 	HOST_IP=$(HOST_IP) docker-compose up -d
 	echo "Backend Coming Up... Waiting..."
-	sleep 10
+	sleep 25
 	make test-debug
 
 down:

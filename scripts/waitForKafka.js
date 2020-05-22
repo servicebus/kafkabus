@@ -23,7 +23,7 @@ const waitForNode = containerId => {
     docker exec \
       ${containerId} \
       bash -c "JMX_PORT=9998 /opt/kafka/bin/kafka-topics.sh --zookeeper zk:2181 --list 2> /dev/null"
-    sleep 5
+    sleep 10
   `
 
   execa(cmd)
