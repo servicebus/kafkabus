@@ -96,6 +96,7 @@ class KafkaBus extends Bus {
     messageType = 'topic',
     messageHandler = requiredParam('messageHandler'),
     callingFunction = 'consume',
+    transaction = true,
     options
   }) {
     const bus = this
@@ -117,7 +118,8 @@ class KafkaBus extends Bus {
             bus,
             client,
             messageHandler,
-            messageType
+            messageType,
+            transaction
           })
         } catch (error) {
           log('error creating topicConsumer', error)
@@ -134,7 +136,7 @@ class KafkaBus extends Bus {
     })
   }
 
-  async listen (topicName, options, messageHandler) {
+  async listen (topicName, options = {}, messageHandler) {
     if (typeof options === 'function') {
       messageHandler = options
       options = {}
@@ -145,11 +147,12 @@ class KafkaBus extends Bus {
       messageType: 'command',
       messageHandler,
       options,
-      callingFunction: 'listen'
+      callingFunction: 'listen',
+      transaction: options.transaction || true
     })
   }
 
-  async subscribe (topicName, options, messageHandler) {
+  async subscribe (topicName, options = {}, messageHandler) {
     if (typeof options === 'function') {
       messageHandler = options
       options = {}
@@ -160,7 +163,8 @@ class KafkaBus extends Bus {
       messageType: 'event',
       messageHandler,
       options,
-      callingFunction: 'subscribe'
+      callingFunction: 'subscribe',
+      transaction: options.transaction || true
     })
   }
 
