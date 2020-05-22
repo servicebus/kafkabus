@@ -6,7 +6,8 @@ class TopicConsumer extends EventEmitter {
     topicName = requiredParam('topicName'),
     bus = requiredParam('bus'),
     messageHandler = requiredParam('messageHandler'),
-    messageType = requiredParam('messageType')
+    messageType = requiredParam('messageType'),
+    transaction = true
   } = {}) {
     super()
 
@@ -21,7 +22,8 @@ class TopicConsumer extends EventEmitter {
       messageHandler,
       log,
       groupId,
-      messageType
+      messageType,
+      transaction
     })
 
     log(`new consumer for topic ${topicName} with consumer group id ${groupId}`)
@@ -78,41 +80,74 @@ class TopicConsumer extends EventEmitter {
   }
 
   async run () {
-    const { consumer, bus, messageHandler } = this
+    const { consumer, bus, messageHandler, transaction } = this
     const { handleIncoming, log } = bus
-    log(`starting consumer processing`)
-    try {
-      await consumer.run({
-        eachMessage: ({ topic, partition, message }) => {
-          log(
-            `handling incoming message on topic ${topic} on partion ${partition}`,
-            message
-          )
-          message.content = JSON.parse(
-            message.value && message.value.toString()
-          )
 
-          const options = {}
-          if (message.content.properties && message.content.properties.ack)
-            options.ack = true
-          // log({ message })
-          handleIncoming.call(bus, consumer, message, options, function (
-            consumer,
-            message,
-            options
-          ) {
-            try {
-              let { properties } = message.content
-              // delete messageData.properties
-              // log('messageData:', messageData)
-              messageHandler(message.content, { properties })
-            } catch (err) {
-              log('Error handling message')
-              throw err
-            }
-          })
-        }
+    const processMessage = ({ topic, partition, message }) => {
+      return new Promise((resolve, reject) => {
+        log(
+          `handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`
+        )
+        message.content = JSON.parse(message.value && message.value.toString())
+
+        const options = {}
+        if (message.content.properties && message.content.properties.ack)
+          options.ack = true
+        // log({ message })
+        handleIncoming.call(bus, consumer, message, options, function (
+          consumer,
+          message,
+          options
+        ) {
+          try {
+            let { properties } = message.content
+            // delete messageData.properties
+            // log('messageData:', messageData)
+            messageHandler(message.content, { properties })
+            return resolve()
+          } catch (err) {
+            log('Error handling message')
+            return reject(err)
+          }
+        })
       })
+    }
+
+    log(
+      `starting consumer processing - transactions are ${
+        transaction ? 'enabled' : 'disabled'
+      }`
+    )
+
+    let consumerOptions
+
+    if (transaction) {
+      consumerOptions = {
+        eachBatchAutoResolve: false,
+        eachBatch: async ({
+          batch,
+          resolveOffset,
+          heartbeat,
+          isRunning,
+          isStale
+        }) => {
+          const { topic, partition } = batch
+          for (let message of batch.messages) {
+            if (!isRunning() || isStale()) break
+            await processMessage({ topic, partition, message })
+            resolveOffset(message.offset)
+            await heartbeat()
+          }
+        }
+      }
+    } else {
+      consumerOptions = {
+        eachMessage: await processMessage
+      }
+    }
+
+    try {
+      await consumer.run(consumerOptions)
     } catch (error) {
       log('kafka consumer - error running', error)
       throw error
