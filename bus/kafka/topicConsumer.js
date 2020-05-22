@@ -14,7 +14,7 @@ class TopicConsumer extends EventEmitter {
     const self = this
     const { log, kafka, serviceName } = bus
 
-    let groupId = `${serviceName}-${topicName}-${messageType}-consumer`
+    let groupId = `${serviceName}.${topicName}.${messageType}-consumer`
 
     Object.assign(this, {
       topicName,

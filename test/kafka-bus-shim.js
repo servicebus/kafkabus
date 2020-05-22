@@ -7,23 +7,25 @@ let { connectionOpts } = require('../testHelpers')
 //   throw new Error('Tests require a KAFKA_HOSTS environment variable to be set, pointing to the Kafka instance you wish to use.');
 
 // var brokers = process.env.KAFKA_HOSTS;
-var retry = require('@servicebus/retry')
+// var retry = require('@servicebus/retry')
 
 let kafkaBus = require('../').bus
 
-var store = new retry.RedisStore({
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT
-})
+// var store = new retry.RedisStore({
+//   host: process.env.REDIS_HOST,
+//   port: process.env.REDIS_PORT
+// })
 
-module.exports = async function () {
+module.exports = async function ({
+  serviceName = 'test'
+} = {}) {
   let bus
 
   try {
     bus = await kafkaBus({
       ...connectionOpts(),
       brokers: ['localhost:9092', 'localhost:9095', 'localhost:9098'],
-      serviceName: 'test'
+      serviceName
     })
   } catch (e) {
     throw e
@@ -37,14 +39,14 @@ module.exports = async function () {
   bus.use(bus.package())
   bus.use(bus.correlate())
   // bus.use(bus.logger());
-  bus.use(
-    retry({
-      setRetriesRemaining: true,
-      store,
-      keyExpireTTL: 0,
-      namespace: 'test'
-    })
-  )
+  // bus.use(
+  //   retry({
+  //     setRetriesRemaining: true,
+  //     store,
+  //     keyExpireTTL: 0,
+  //     namespace: 'test'
+  //   })
+  // )
 
   return bus
 }

@@ -119,7 +119,8 @@ class KafkaBus extends Bus {
             client,
             messageHandler,
             messageType,
-            transaction
+            transaction,
+            ...options
           })
         } catch (error) {
           log('error creating topicConsumer', error)
