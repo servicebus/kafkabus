@@ -6,25 +6,30 @@ describe('kafka servicebus', function () {
     it('should cause message to be received by listen', async function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
+        const data = { my: 'event' }
         this.timeout(30000)
         log('bus.listen', bus.listen)
         await bus.listen('my.event.1', function (event) {
-          console.log('event data', event.data)
+          console.log(event.data.should)
+          event.data.my.should.be.equal(data.my)
           resolve(true)
         })
-        await bus.send('my.event.1', { my: 'event' })
+        await bus.send('my.event.1', data)
       })
     })
     it('should cause message to be received by listen without transactions', async function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
+        const data = { my: 'event' }
         this.timeout(30000)
         log('bus.listen', bus.listen)
-        await bus.listen('my.event.2', { transaction: false }, function (event) {
-          console.log('event data', event.data)
+        await bus.listen('my.event.2', { transaction: false }, function (
+          event
+        ) {
+          event.data.my.should.be.equal(data.my)
           resolve(true)
         })
-        await bus.send('my.event.2', { transaction: false }, { my: 'event' })
+        await bus.send('my.event.2', data, { transaction: false })
       })
     })
 
