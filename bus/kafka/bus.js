@@ -149,7 +149,7 @@ class KafkaBus extends Bus {
       messageHandler,
       options,
       callingFunction: 'listen',
-      transaction: options.transaction || true
+      transaction: options.transaction === false ? false : true
     })
   }
 
@@ -165,7 +165,7 @@ class KafkaBus extends Bus {
       messageHandler,
       options,
       callingFunction: 'subscribe',
-      transaction: options.transaction || true
+      transaction: options.transaction === false ? false : true
     })
   }
 
@@ -242,7 +242,7 @@ class KafkaBus extends Bus {
       messageType: 'command',
       message,
       options,
-      transaction: options.transaction || true
+      transaction: options.transaction === false ? false : true
     })
   }
 
@@ -252,7 +252,7 @@ class KafkaBus extends Bus {
       messageType: 'event',
       message,
       options,
-      transaction: options.transaction || true
+      transaction: options.transaction === false ? false : true
     })
   }
 

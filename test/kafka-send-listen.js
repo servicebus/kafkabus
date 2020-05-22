@@ -15,6 +15,18 @@ describe('kafka servicebus', function () {
         await bus.send('my.event.1', { my: 'event' })
       })
     })
+    it('should cause message to be received by listen without transactions', async function () {
+      return new Promise(async (resolve, reject) => {
+        let bus = await kafkabus()
+        this.timeout(30000)
+        log('bus.listen', bus.listen)
+        await bus.listen('my.event.2', { transaction: false }, function (event) {
+          console.log('event data', event.data)
+          resolve(true)
+        })
+        await bus.send('my.event.2', { transaction: false }, { my: 'event' })
+      })
+    })
 
     it('can handle high event throughput without transactions', async function () {
       return new Promise(async (resolve, reject) => {
