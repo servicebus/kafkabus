@@ -189,7 +189,7 @@ class KafkaBus extends Bus {
       const transaction = await transactionalProducer.transaction()
 
       try {
-        log(`sending message to topic ${topicName}`, message, options)
+        log(`sending transactional message to topic ${topicName}`, message, options)
         message.properties = options
         const { partitionKey = 'default' } = options
         let result = await transaction.send({
