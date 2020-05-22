@@ -32,7 +32,7 @@ describe('kafka servicebus', function(){
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
         let bus2 = await kafkabus({ serviceName: 'test2' })
-        this.timeout(30000);
+        this.timeout(60000);
         let done1, done2
 
         const checkDone = () => {
@@ -41,13 +41,13 @@ describe('kafka servicebus', function(){
           }
         }
 
-        await bus.subscribe('my.event.11', function (event) {
+        await bus.subscribe('my.event.12', function (event) {
           log(event)
           done1 = true
           log('done 1')
           checkDone()
         });
-        await bus2.subscribe('my.event.11', function (event) {
+        await bus2.subscribe('my.event.12', function (event) {
           log(event)
           done2 = true
           log('done 2')
@@ -55,7 +55,7 @@ describe('kafka servicebus', function(){
         });
 
         setTimeout(async function () {
-          await bus.publish('my.event.11', { my: 'event' });
+          await bus.publish('my.event.12', { my: 'event' });
         }, 100);
       })  
 
