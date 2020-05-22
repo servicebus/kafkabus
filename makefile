@@ -1,4 +1,4 @@
-DEBUG?=servicebus*
+DEBUG?=
 HOST_IP=127.0.0.1
 DO_NOT_STOP?=false
 REDIS_HOST?=localhost

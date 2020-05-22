@@ -49,6 +49,11 @@ class KafkaBus extends Bus {
 
     log('creating kafka producer')
 
+    this.transactionalProducer = this.kafka.producer({
+      maxInFlightRequests: 1,
+      idempotent: true,
+      transactionalId: this.serviceName
+    })
     this.producer = this.kafka.producer()
 
     log('kafkabus constructed')
@@ -164,11 +169,41 @@ class KafkaBus extends Bus {
     messageType = 'topic',
     message = requiredParam('message'),
     callingFunction = 'produce',
-    options = {}
+    options = {},
+    transaction = true
   }) {
-    const { log, producer } = this
+    const { log, producer, transactionalProducer } = this
 
     log(`${callingFunction} called - producing ${messageType} ${topicName}`)
+
+    const sendTransactionalMessage = async function (
+      topicName,
+      message,
+      options
+    ) {
+      const transaction = await transactionalProducer.transaction()
+
+      try {
+        log(`sending message to topic ${topicName}`, message, options)
+        message.properties = options
+        const { partitionKey = 'default' } = options
+        let result = await transaction.send({
+          topic: topicName,
+          compression: CompressionTypes.GZIP,
+          messages: [
+            {
+              key: `${partitionKey}-${messageType}`,
+              value: JSON.stringify(message)
+            }
+          ]
+        })
+
+        await transaction.commit()
+        return result
+      } catch (err) {
+        await transaction.abort()
+      }
+    }
 
     const sendMessage = async function (topicName, message, options) {
       log(`sending message to topic ${topicName}`, message, options)
@@ -192,25 +227,27 @@ class KafkaBus extends Bus {
       topicName,
       message,
       options,
-      sendMessage.bind(this)
+      transaction ? sendTransactionalMessage.bind(this) : sendMessage.bind(this)
     )
   }
 
-  async send (topicName, message, options) {
+  async send (topicName, message, options = {}) {
     return this.produce({
       topicName,
       messageType: 'command',
       message,
-      options
+      options,
+      transaction: options.transaction || true
     })
   }
 
-  async publish (topicName, message, options) {
+  async publish (topicName, message, options = {}) {
     return this.produce({
       topicName,
       messageType: 'event',
       message,
-      options
+      options,
+      transaction: options.transaction || true
     })
   }
 
@@ -219,7 +256,7 @@ class KafkaBus extends Bus {
     options = {},
     callback
   ) {
-    const { log, producer, initialized } = this
+    const { log, producer } = this
 
     log(`producing message on topic ${topic}`)
 
