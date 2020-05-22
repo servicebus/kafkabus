@@ -85,10 +85,10 @@ class TopicConsumer extends EventEmitter {
 
     const processMessage = ({ topic, partition, message }) => {
       return new Promise((resolve, reject) => {
-        log(
-          `consumer ${this.groupId} handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`
-        )
         message.content = JSON.parse(message.value && message.value.toString())
+        log(
+          `consumer ${this.groupId} handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`, message.content
+        )
 
         const options = {}
         if (message.content.properties && message.content.properties.ack)

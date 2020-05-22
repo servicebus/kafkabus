@@ -19,20 +19,6 @@ services:
   #     - servicebus
   #   command: npm run test:staging
 
-  redis:
-    image: redis
-    networks:
-      - servicebus
-    ports:
-      - 6379:6379
-
-  mongo:
-    image: mongo
-    networks:
-      - default
-    ports:
-      - 27017:27017
-
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
