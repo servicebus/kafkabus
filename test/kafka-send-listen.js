@@ -60,7 +60,7 @@ describe('kafka servicebus', function () {
     //   })
     // });
 
-    it('can handle high event throughput when using batch produce', async function () {
+    it('can handle high event throughput without transactions', async function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
         let time = 30000
@@ -70,7 +70,7 @@ describe('kafka servicebus', function () {
         }, time - 100)
         var count = 0,
           batchSize = 2000,
-          repeatBatch = 5
+          repeatBatch = 10
         function tryDone () {
           count++
           if (count >= batchSize * repeatBatch) {
@@ -79,7 +79,9 @@ describe('kafka servicebus', function () {
           }
         }
 
-        await bus.listen('my.command.3', function (event) {
+        await bus.listen('my.command.3', { transaction: false }, function (
+          event
+        ) {
           tryDone()
         })
 
