@@ -26,7 +26,7 @@ class TopicConsumer extends EventEmitter {
       transaction
     })
 
-    log(`new consumer for topic ${topicName} with consumer group id ${groupId}`)
+    log(`new consumer ${groupId} for topic ${topicName} with consumer group id ${groupId}`)
 
     this.consumer = kafka.consumer({
       groupId
@@ -51,7 +51,7 @@ class TopicConsumer extends EventEmitter {
     try {
       return await this.consumer.connect()
     } catch (error) {
-      log('kafka consumer - error connecting', error)
+      log(`kafka consumer ${this.groupId} - error connecting`, error)
       throw error
     }
   }
@@ -60,7 +60,7 @@ class TopicConsumer extends EventEmitter {
     try {
       return await this.consumer.disconnect()
     } catch (error) {
-      log('kafka consumer - error disconnecting', error)
+      log(`kafka consumer ${this.groupId} - error disconnecting`, error)
       throw error
     }
   }
@@ -69,14 +69,14 @@ class TopicConsumer extends EventEmitter {
   async subscribe () {
     const { consumer, bus } = this
     const { log } = bus
-    log(`consumer subscribing to topic ${this.topicName}`)
+    log(`consumer  ${this.groupId} subscribing to topic ${this.topicName}`)
     try {
       await consumer.subscribe({ topic: this.topicName })
     } catch (error) {
-      log('kafka consumer - error subscribing to topic', error)
+      log(`kafka consumer ${this.groupId} - error subscribing to topic`, error)
       throw error
     }
-    log(`consumer has subscribed to topic ${this.topicName}`)
+    log(`consumer ${this.groupId} has subscribed to topic ${this.topicName}`)
   }
 
   async run () {
@@ -86,7 +86,7 @@ class TopicConsumer extends EventEmitter {
     const processMessage = ({ topic, partition, message }) => {
       return new Promise((resolve, reject) => {
         log(
-          `handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`
+          `consumer ${this.groupId} handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`
         )
         message.content = JSON.parse(message.value && message.value.toString())
 
@@ -114,7 +114,7 @@ class TopicConsumer extends EventEmitter {
     }
 
     log(
-      `starting consumer processing - transactions are ${
+      `starting consumer ${this.groupId} processing - transactions are ${
         transaction ? 'enabled' : 'disabled'
       }`
     )
@@ -149,10 +149,10 @@ class TopicConsumer extends EventEmitter {
     try {
       await consumer.run(consumerOptions)
     } catch (error) {
-      log('kafka consumer - error running', error)
+      log(`kafka consumer ${this.groupId} - error running`, error)
       throw error
     }
-    log('consumer processing has started')
+    log(`consumer ${this.groupId} processing has started`)
   }
 }
 
