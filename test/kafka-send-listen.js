@@ -11,14 +11,14 @@ describe('kafka servicebus', function () {
         const data = { my: 'event' }
         this.timeout(timeout)
         log('bus.listen', bus.listen)
-        await bus.listen('my.event.1', function (event, message, done, fail) {
+        await bus.listen('my.command.1', function (event, message, done, fail) {
           console.log(event.data.should)
           console.log(arguments)
           event.data.my.should.be.equal(data.my)
           done()
           resolve(true)
         })
-        await bus.send('my.event.1', data)
+        await bus.send('my.command.1', data)
       })
     })
     it('should cause message to be received by listen without transactions', async function () {
@@ -26,15 +26,14 @@ describe('kafka servicebus', function () {
         let bus = await kafkabus()
         const data = { my: 'event' }
         this.timeout(timeout)
-        log('bus.listen', bus.listen)
-        await bus.listen('my.event.2', { transaction: false }, function (
+        await bus.listen('my.command.2', { transaction: false }, function (
           event,
-          message,
+          message
         ) {
           event.data.my.should.be.equal(data.my)
-          resolve(true)
+          resolve()
         })
-        await bus.send('my.event.2', data, { transaction: false })
+        await bus.send('my.command.2', data, { transaction: false })
       })
     })
 
@@ -59,7 +58,7 @@ describe('kafka servicebus', function () {
 
         await bus.listen('my.command.3', { transaction: false }, function (
           event,
-          message,
+          message
         ) {
           tryDone()
         })
