@@ -21,22 +21,6 @@ describe('kafka servicebus', function () {
         await bus.send('my.command.1', data)
       })
     })
-    it('should cause message to be received by listen without transactions', async function () {
-      return new Promise(async (resolve, reject) => {
-        let bus = await kafkabus()
-        const data = { my: 'event' }
-        this.timeout(timeout)
-        await bus.listen('my.command.2', { transaction: false }, function (
-          event,
-          message
-        ) {
-          event.data.my.should.be.equal(data.my)
-          resolve()
-        })
-        await bus.send('my.command.2', data, { transaction: false })
-      })
-    })
-
     it('can handle high event throughput without transactions', async function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
