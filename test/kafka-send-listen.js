@@ -39,7 +39,8 @@ describe('kafka servicebus', function () {
     it('can handle high event throughput without transactions', async function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
-        let time = 30000
+        // starting consumer takes longest - once it's going it is very fast
+        let time = 60000
         this.timeout(time)
         setTimeout(() => {
           console.log(`processed ${count} messages`)
