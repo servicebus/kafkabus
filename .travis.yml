@@ -18,5 +18,5 @@ jobs:
       if: branch == master && !fork
       node_js: 'node'
       script:
-        - npm install -g semantic-release@^15
+        - npm install -g semantic-release
         - semantic-release
