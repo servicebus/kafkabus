@@ -26,7 +26,9 @@ class TopicConsumer extends EventEmitter {
       transaction
     })
 
-    log(`new consumer ${groupId} for topic ${topicName} with consumer group id ${groupId}`)
+    log(
+      `new consumer ${groupId} for topic ${topicName} with consumer group id ${groupId}`
+    )
 
     this.consumer = kafka.consumer({
       groupId
@@ -87,7 +89,8 @@ class TopicConsumer extends EventEmitter {
       return new Promise((resolve, reject) => {
         message.content = JSON.parse(message.value && message.value.toString())
         log(
-          `consumer ${this.groupId} handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`, message.content
+          `consumer ${this.groupId} handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`,
+          message.content
         )
 
         const options = {}
@@ -102,9 +105,13 @@ class TopicConsumer extends EventEmitter {
           try {
             let { properties } = message.content
             // delete messageData.properties
-            // log('messageData:', messageData)
-            messageHandler(message.content, { properties })
-            return resolve()
+            // log('messageHandler', messageHandler)
+            return messageHandler(
+              message.content,
+              message.content,
+              resolve,
+              reject
+            )
           } catch (err) {
             log('Error handling message')
             return reject(err)
@@ -134,8 +141,14 @@ class TopicConsumer extends EventEmitter {
           const { topic, partition } = batch
           for (let message of batch.messages) {
             if (!isRunning() || isStale()) break
-            await processMessage({ topic, partition, message })
+            try {
+              await processMessage({ topic, partition, message })
+            } catch (err) {
+              log('failed to process message')
+              throw err
+            }
             resolveOffset(message.offset)
+            log('processed message and resolved offset', message.offset)
             await heartbeat()
           }
         }
