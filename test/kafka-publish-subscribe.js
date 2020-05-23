@@ -11,13 +11,13 @@ describe('kafka servicebus', function(){
         let bus = await kafkabus()
         this.timeout(30000);
 
-        await bus.subscribe('my.event.11', function (event) {
-          log(event)
+        await bus.subscribe('my.event.11', function (event, message, done, fail) {
           event.should.have.property('data')
           event.data.should.have.property('my')
           event.should.have.property('type')
           event.should.have.property('cid')
           event.should.have.property('datetime')
+          done()
           resolve(true);
         });
         setTimeout(async function () {
@@ -41,16 +41,18 @@ describe('kafka servicebus', function(){
           }
         }
 
-        await bus.subscribe('my.event.12', function (event) {
+        await bus.subscribe('my.event.12', function (event, message, done, fail) {
           log(event)
           done1 = true
           log('done 1')
+          done()
           checkDone()
         });
-        await bus2.subscribe('my.event.12', function (event) {
+        await bus2.subscribe('my.event.12', function (event, message, done, fail) {
           log(event)
           done2 = true
           log('done 2')
+          done()
           checkDone()
         });
 

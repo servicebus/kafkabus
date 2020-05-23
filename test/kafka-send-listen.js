@@ -9,9 +9,11 @@ describe('kafka servicebus', function () {
         const data = { my: 'event' }
         this.timeout(30000)
         log('bus.listen', bus.listen)
-        await bus.listen('my.event.1', function (event) {
+        await bus.listen('my.event.1', function (event, message, done, fail) {
           console.log(event.data.should)
+          console.log(arguments)
           event.data.my.should.be.equal(data.my)
+          done()
           resolve(true)
         })
         await bus.send('my.event.1', data)
@@ -24,7 +26,8 @@ describe('kafka servicebus', function () {
         this.timeout(30000)
         log('bus.listen', bus.listen)
         await bus.listen('my.event.2', { transaction: false }, function (
-          event
+          event,
+          message,
         ) {
           event.data.my.should.be.equal(data.my)
           resolve(true)
@@ -43,7 +46,7 @@ describe('kafka servicebus', function () {
         }, time - 100)
         var count = 0,
           batchSize = 2000,
-          repeatBatch = 5
+          repeatBatch = 10
         function tryDone () {
           count++
           if (count >= batchSize * repeatBatch) {
@@ -53,7 +56,8 @@ describe('kafka servicebus', function () {
         }
 
         await bus.listen('my.command.3', { transaction: false }, function (
-          event
+          event,
+          message,
         ) {
           tryDone()
         })

@@ -27,7 +27,7 @@ class TopicConsumer extends EventEmitter {
     })
 
     log(
-      `new consumer ${groupId} for topic ${topicName} with consumer group id ${groupId}`
+      `new consumer ${groupId} for topic ${topicName} with consumer group id ${groupId} with transactions ${transaction ? 'enabled' : 'disabled'}`
     )
 
     this.consumer = kafka.consumer({
@@ -85,7 +85,7 @@ class TopicConsumer extends EventEmitter {
     const { consumer, bus, messageHandler, transaction } = this
     const { handleIncoming, log } = bus
 
-    const processMessage = ({ topic, partition, message }) => {
+    const processTransactionalMessage = ({ topic, partition, message }) => {
       return new Promise((resolve, reject) => {
         message.content = JSON.parse(message.value && message.value.toString())
         log(
@@ -94,8 +94,9 @@ class TopicConsumer extends EventEmitter {
         )
 
         const options = {}
-        if (message.content.properties && message.content.properties.ack)
+        if (message.content.properties && message.content.properties.ack) {
           options.ack = true
+        }
         // log({ message })
         handleIncoming.call(bus, consumer, message, options, function (
           consumer,
@@ -117,6 +118,32 @@ class TopicConsumer extends EventEmitter {
             return reject(err)
           }
         })
+      })
+    }
+
+    const processMessage = ({ topic, partition, message }) => {
+        message.content = JSON.parse(message.value && message.value.toString())
+        log(
+          `consumer ${this.groupId} handling incoming message ${message.offset} on topic ${topic} on partion ${partition}`,
+          message.content
+        )
+
+        const options = {}
+        if (message.content.properties && message.content.properties.ack) {
+          options.ack = true
+        }
+        // log({ message })
+        handleIncoming.call(bus, consumer, message, options, function (
+          consumer,
+          message,
+          options
+        ) {
+
+          message.properties = message.content.properties
+          return messageHandler(
+            message.content,
+            message,
+          )
       })
     }
 
@@ -142,7 +169,7 @@ class TopicConsumer extends EventEmitter {
           for (let message of batch.messages) {
             if (!isRunning() || isStale()) break
             try {
-              await processMessage({ topic, partition, message })
+              await processTransactionalMessage({ topic, partition, message })
             } catch (err) {
               log('failed to process message')
               throw err
@@ -155,7 +182,7 @@ class TopicConsumer extends EventEmitter {
       }
     } else {
       consumerOptions = {
-        eachMessage: await processMessage
+        eachMessage: processMessage
       }
     }
 
