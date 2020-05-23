@@ -48,7 +48,7 @@ describe('kafka servicebus', function () {
         }, timeout - 100)
         var count = 0,
           batchSize = 2000,
-          repeatBatch = 10
+          repeatBatch = 5
         function tryDone () {
           count++
           if (count >= batchSize * repeatBatch) {
