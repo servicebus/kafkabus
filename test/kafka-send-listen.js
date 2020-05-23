@@ -45,7 +45,7 @@ describe('kafka servicebus', function () {
         this.timeout(timeout)
         setTimeout(() => {
           console.log(`processed ${count} messages`)
-        }, time - 100)
+        }, timeout - 100)
         var count = 0,
           batchSize = 2000,
           repeatBatch = 10
