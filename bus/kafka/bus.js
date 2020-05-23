@@ -2,6 +2,7 @@ const { Kafka, CompressionTypes } = require('kafkajs')
 const Bus = require('@servicebus/core')
 const json = require('@servicebus/json-formatter')
 const debug = require('debug')('servicebus-kafka')
+const readableId = require('readable-id-mjs')
 const topicConsumer = require('./topicConsumer')
 const requiredParam = require('../lib/requiredParam')
 
@@ -52,7 +53,7 @@ class KafkaBus extends Bus {
     this.transactionalProducer = this.kafka.producer({
       maxInFlightRequests: 1,
       idempotent: true,
-      transactionalId: this.serviceName
+      transactionalId: `${this.serviceName}-${readableId()}`
     })
     this.producer = this.kafka.producer()
 
@@ -189,7 +190,11 @@ class KafkaBus extends Bus {
       const transaction = await transactionalProducer.transaction()
 
       try {
-        log(`sending transactional message to topic ${topicName}`, message, options)
+        log(
+          `sending transactional message ${message.cid} to topic ${topicName}`,
+          message,
+          options
+        )
         message.properties = options
         const { partitionKey = 'default' } = options
         let result = await transaction.send({
@@ -204,6 +209,7 @@ class KafkaBus extends Bus {
         })
 
         await transaction.commit()
+        log(`committed ${topicName} message ${message.cid}`)
         return result
       } catch (err) {
         await transaction.abort()
