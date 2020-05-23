@@ -1,13 +1,15 @@
 const log = require('debug')('servicebus:test')
 const kafkabus = require('./kafka-bus-shim')
 
+let timeout = 60000
+
 describe('kafka servicebus', function () {
   describe('#send & #listen', function () {
     it('should cause message to be received by listen', async function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
         const data = { my: 'event' }
-        this.timeout(30000)
+        this.timeout(timeout)
         log('bus.listen', bus.listen)
         await bus.listen('my.event.1', function (event, message, done, fail) {
           console.log(event.data.should)
@@ -23,7 +25,7 @@ describe('kafka servicebus', function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
         const data = { my: 'event' }
-        this.timeout(30000)
+        this.timeout(timeout)
         log('bus.listen', bus.listen)
         await bus.listen('my.event.2', { transaction: false }, function (
           event,
@@ -40,8 +42,7 @@ describe('kafka servicebus', function () {
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
         // starting consumer takes longest - once it's going it is very fast
-        let time = 60000
-        this.timeout(time)
+        this.timeout(timeout)
         setTimeout(() => {
           console.log(`processed ${count} messages`)
         }, time - 100)

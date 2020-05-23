@@ -1,6 +1,8 @@
 const kafkabus = require('./kafka-bus-shim');
 const log = require('debug')('servicebus:test')
 
+let timeout = 60000
+
 describe('kafka servicebus', function(){
 
   describe('#publish & #subscribe', function(){
@@ -9,7 +11,7 @@ describe('kafka servicebus', function(){
 
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
-        this.timeout(30000);
+        this.timeout(timeout);
 
         await bus.subscribe('my.event.11', function (event, message, done, fail) {
           event.should.have.property('data')
@@ -32,7 +34,7 @@ describe('kafka servicebus', function(){
       return new Promise(async (resolve, reject) => {
         let bus = await kafkabus()
         let bus2 = await kafkabus({ serviceName: 'test2' })
-        this.timeout(60000);
+        this.timeout(timeout);
         let done1, done2
 
         const checkDone = () => {
