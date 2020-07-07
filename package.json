@@ -40,7 +40,7 @@
     "@servicebus/retry": "1.0.2",
     "commitizen": "4.1.2",
     "cz-conventional-changelog": "3.2.0",
-    "execa": "4.0.2",
+    "execa": "4.0.3",
     "husky": "4.2.5",
     "ip": "1.1.5",
     "jest": "26.1.0",
