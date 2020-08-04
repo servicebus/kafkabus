@@ -46,7 +46,7 @@
     "jest": "26.2.2",
     "lint-staged": "10.2.11",
     "longjohn": "0.2.12",
-    "mocha": "8.1.0",
+    "mocha": "8.1.1",
     "prettier-standard": "16.4.1",
     "should": "13.2.3",
     "sinon": "9.0.2"
