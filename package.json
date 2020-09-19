@@ -30,7 +30,7 @@
   "dependencies": {
     "@servicebus/core": "1.1.2",
     "@servicebus/json-formatter": "1.0.1",
-    "debug": "4.1.1",
+    "debug": "4.2.0",
     "extend": "3.0.2",
     "kafkajs": "1.12.0",
     "node-uuid": "1.4.8",
