@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@servicebus/retry": "1.0.3",
-    "commitizen": "4.2.1",
+    "commitizen": "4.2.2",
     "cz-conventional-changelog": "3.3.0",
     "execa": "4.1.0",
     "husky": "4.3.5",
