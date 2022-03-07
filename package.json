@@ -32,7 +32,7 @@
     "@servicebus/json-formatter": "1.0.1",
     "debug": "4.3.0",
     "extend": "3.0.2",
-    "kafkajs": "1.12.0",
+    "kafkajs": "1.16.0",
     "node-uuid": "1.4.8",
     "readable-id-mjs": "1.0.0"
   },
