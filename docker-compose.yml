@@ -35,7 +35,7 @@ services:
       - ./testHelpers/kafka/server-jaas.conf:/etc/kafka/server-jaas.conf
 
   kafka1:
-    image: confluentinc/cp-kafka:5.5.3
+    image: confluentinc/cp-kafka:5.5.12
     hostname: kafka1
     container_name: kafka1
     labels:
@@ -60,7 +60,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   
   kafka2:
-    image: confluentinc/cp-kafka:5.5.3
+    image: confluentinc/cp-kafka:5.5.12
     hostname: kafka2
     container_name: kafka2
     labels:
@@ -85,7 +85,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   kafka3:
-    image: confluentinc/cp-kafka:5.5.3
+    image: confluentinc/cp-kafka:5.5.12
     hostname: kafka3
     container_name: kafka3
     labels:
